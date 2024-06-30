@@ -1,7 +1,14 @@
 function createDankReplyButton() {
   const button = document.createElement('button');
   button.className = 'dank-reply-btn';
-  button.innerText = 'Dank Reply';
+  
+  const icon = document.createElement('img');
+  icon.src = 'https://raw.githubusercontent.com/Shivamc489/bedank/main/assets/dank.svg';
+  icon.alt = 'Dank Reply';
+  icon.style.width = '24px';
+  icon.style.height = '24px';
+  
+  button.appendChild(icon);
   button.onclick = generateDankReply;
   return button;
 }
@@ -10,12 +17,10 @@ function injectButton() {
   const tweetElements = document.querySelectorAll('[data-testid="tweetTextarea_0"]');
   
   tweetElements.forEach(tweet => {
-    console.log(tweet);
     if (tweet && !document.querySelector('.dank-reply-btn')) {
-      const replyButton = document.querySelector('[data-testid="tweetButtonInline"]');
-      console.log("Injecting button");
+      const replyButton = document.querySelector('[data-testid="toolBar"]');
       const dankReplyButton = createDankReplyButton();
-      replyButton.parentNode.insertBefore(dankReplyButton, replyButton.nextSibling);
+      replyButton.insertBefore(dankReplyButton, replyButton.children[1]);
     }
   });
 }
@@ -42,12 +47,15 @@ function displayReply(reply) {
 
 function getTextForParentTweets() {
   const parentTweets = document.querySelectorAll('[data-testid="tweet"]');
-  let text = "you are the best dank replier of all time. this is a twitter thread, your task is to write a dank reply to the following tweets which are separated by 'next tweet: ' and contains the username of who tweeted it: ";
+  let text = "you are the best dank replier of all time. this is a twitter thread, your task is to write a dank reply to the following tweets which are separated by 'next tweet: '";
   
   parentTweets.forEach(tweet => {
     const tweetText = tweet.querySelector('[data-testid="tweetText"]')?.innerText || '';
-    const username = tweet.querySelector('[data-testid="User-Name"]')?.innerText || 'unknown user';
-    text += `@${username}: ${tweetText} next tweet: `;
+    // uncomment if you want to include usernames
+    // const usernameElement = tweet.querySelector('[data-testid="User-Name"]');
+    // let username = usernameElement?.innerText.match(/@\w+/)?.[0] || '@unknown-user';
+    // console.log(username);
+    text += `${tweetText} next tweet: `;
   });
   
   text += "your reply: ";
@@ -57,4 +65,4 @@ function getTextForParentTweets() {
 }
 
 injectButton();
-setInterval(injectButton, 3000);
+setInterval(injectButton, 2000);
