@@ -1,3 +1,17 @@
+let model;
+
+async function initializeModel() {
+  console.log("Initializing model");
+  const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 5000));
+  try {
+    console.log("Creating model");
+    model = await Promise.race([window.ai.createTextSession(), timeout]);
+    console.log("Model created");
+  } catch (error) {
+    console.error('Failed to initialize model:', error);
+  }
+}
+
 function createDankReplyButton() {
   const button = document.createElement('button');
   button.className = 'dank-reply-btn';
@@ -31,10 +45,9 @@ async function generateDankReply(event) {
   button.disabled = true;
   button.innerText = 'Generating...';
 
-  const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 5000));
+  const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 10000));
 
   try {
-    const model = await Promise.race([window.ai.createTextSession(), timeout]);
     const reply = await Promise.race([model.prompt(getTextForParentTweets()), timeout]);
     console.log(reply);
     displayReply(reply);
@@ -55,7 +68,9 @@ async function generateDankReply(event) {
 
 function displayReply(reply) {
   reply = reply.replace(/[\n\r\t\f\v]/g, ' ');
-  reply = reply.replace("@next-tweet: ", '');
+  reply = reply.replace(reply.match(/@\w+/)?.[0], '');
+  reply = reply.replace(": ", '');
+  reply = reply.replace(":", '');
   reply = reply.replace("next-tweet: ", '');
   reply = reply.replace("next-tweet:", '');
   reply = reply.replace("next-tweet", '');
@@ -78,23 +93,23 @@ function getTextForParentTweets() {
   var isFirstTweet = true;
   parentTweets.forEach(tweet => {
     const tweetText = tweet.querySelector('[data-testid="tweetText"]')?.innerText || '';
-    // uncomment if you want to include usernames
-    // const usernameElement = tweet.querySelector('[data-testid="User-Name"]');
-    // let username = usernameElement?.innerText.match(/@\w+/)?.[0] || '@unknown-user';
-    // console.log(username);
+    const usernameElement = tweet.querySelector('[data-testid="User-Name"]');
+    let username = usernameElement?.innerText.match(/@\w+/)?.[0] || '@unknown-user';
+    console.log(username);
     if (isFirstTweet) {
-      text += `${tweetText} `;
+      text += `${username}: ${tweetText} `;
       isFirstTweet = false;
     } else {
-      text += `next-tweet:  ${tweetText} `;
+      text += `${username}: ${tweetText} `;
     }
   });
   
-  text += "now give your human witty dank reply: ";
+  text += "now give your human witty dank reply as a new person in chat thread, dont include words like dank and be as close to the original tweet context as possible: ";
   text = text.replace(/[\n\r\t\f\v]/g, ' ');
   console.log(text);
   return text;
 }
 
+initializeModel();
 injectButton();
 setInterval(injectButton, 2000);

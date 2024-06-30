@@ -3,6 +3,12 @@
   "name": "BeDank",
   "version": "1.0",
   "permissions": ["activeTab", "scripting", "storage"],
+  "icons": {
+    "16": "assets/dank16.png",
+    "32": "assets/dank32.png",
+    "48": "assets/dank48.png",
+    "128": "assets/dank128.png"
+  },
   "content_scripts": [
     {
       "matches": ["*://*.x.com/*"],
