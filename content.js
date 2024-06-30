@@ -7,13 +7,15 @@ function createDankReplyButton() {
 }
 
 function injectButton() {
-  const tweetElements = document.querySelectorAll('article');
+  const tweetElements = document.querySelectorAll('[data-testid="tweetTextarea_0"]');
   
   tweetElements.forEach(tweet => {
-    const commentButton = tweet.querySelector('[data-testid="reply"]');
-    if (commentButton && !tweet.querySelector('.dank-reply-btn')) {
+    console.log(tweet);
+    if (tweet && !document.querySelector('.dank-reply-btn')) {
+      const replyButton = document.querySelector('[data-testid="tweetButtonInline"]');
+      console.log("Injecting button");
       const dankReplyButton = createDankReplyButton();
-      commentButton.parentNode.insertBefore(dankReplyButton, commentButton.nextSibling);
+      replyButton.parentNode.insertBefore(dankReplyButton, replyButton.nextSibling);
     }
   });
 }
@@ -27,8 +29,15 @@ async function generateDankReply(event) {
 }
 
 function displayReply(reply) {
-  const replyBox = document.querySelector('[data-testid="tweetTextarea_0RichTextInputContainer"]');
-  replyBox.innerText = reply;
+  const replyBox = document.querySelector('[data-testid="tweetTextarea_0"]');
+  
+  if (replyBox) {
+    replyBox.focus();
+    replyBox.value = '';
+    document.execCommand('insertText', false, reply);
+  } else {
+    console.log("Reply box not found");
+  }
 }
 
 function getTextForParentTweets() {
