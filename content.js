@@ -17,7 +17,7 @@ function createDankReplyButton() {
   button.className = 'dank-reply-btn';
   
   const icon = document.createElement('img');
-  icon.src = 'https://raw.githubusercontent.com/Shivamc489/bedank/main/assets/dank.svg';
+  icon.src = 'https://raw.githubusercontent.com/Shivamc489/bedank/main/assets/icon512.png';
   icon.alt = 'Dank Reply';
   icon.style.width = '24px';
   icon.style.height = '24px';
@@ -88,7 +88,7 @@ function displayReply(reply) {
 
 function getTextForParentTweets() {
   const parentTweets = document.querySelectorAll('[data-testid="tweet"]');
-  let text = "you are the best human dank replier of all time. this is a twitter thread, your task is to write a dank reply to the following tweets which are separated by 'next-tweet: '";
+  let text = "you are the best human dank replier of all time. this is a twitter thread, your task is to write a dank reply to the following tweets which are separated by '@${and a username}'";
   
   var isFirstTweet = true;
   parentTweets.forEach(tweet => {
