@@ -2,6 +2,11 @@ let model;
 
 async function initializeModel() {
   console.log("Initializing model");
+  const canCreateTextSession = await window.ai.canCreateTextSession();
+  if (canCreateTextSession != 'readily') {
+    alert('Please enable the AI flags in your browser to continue');
+    return;
+  }
   const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 5000));
   try {
     console.log("Creating model");
